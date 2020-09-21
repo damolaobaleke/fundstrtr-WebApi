@@ -81,7 +81,7 @@ router.get("/users/:id", (req, res) => {
 //LogOut
 router.get("/logout", function(req, res) {
     req.logOut() //destroying user data in the session from request
-   return successResponseMsg(res, 200, 'Logout successfully');
+   return successResponseMsg(res, 200, 'Logout successfully')
 })
 
 //sign up with google
@@ -89,4 +89,5 @@ router.get("/logout", function(req, res) {
 //sign up with LinkedIn
 
 //AUTHENTICATION ROUTES
+
 module.exports = router
