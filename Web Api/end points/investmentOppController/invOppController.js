@@ -1,5 +1,6 @@
 var express = require('express')
-var router = express.Router()
+var router = express.Router();
+const { errorResponseMsg, successResponseMsg } = require('../../utils/response');
 
 //STRIPE
 // Set your secret key. Remember to switch to your live secret key in production!
@@ -11,15 +12,15 @@ const sgMail = require('@sendgrid/mail');
 
 //Models
 var invOpp = require('../../models/investmentopportunities')
-var User = require('../../models/user')
 
 router.get("/investopp", function(req, res) {
     invOpp.find({}, function(err, invOppInDb) {
         if (err) {
             console.log(err)
+            return errorResponseMsg(res, 400, err.message);
         } else {
             //console.log(invOppInDb)
-            res.send({ "investment Opportunities": invOppInDb });
+            return successResponseMsg(res, 200, 'Invest Opp fetched', invOppInDb);
 
         }
     })
