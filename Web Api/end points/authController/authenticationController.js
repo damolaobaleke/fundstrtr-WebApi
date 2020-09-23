@@ -2,7 +2,7 @@ const router = require('express').Router();
 const sgMail = require('@sendgrid/mail');
 const { signJWT } = require('../../utils/auth-token');
 const emailTemplate = require('../../utils/email-templates/signup-template');
-const { successResponseMsg, errorResponseMsg, sessionSuccessResponseMsg } = require('../../utils/response');
+const { successResponseMsg, errorResponseMsg, sessionSuccessResponseMsg } = require('../../utils/responses');
 //Models
 const User = require('../../models/user')
 

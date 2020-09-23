@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { successResponseMsg } = require('../../utils/response');
+const { successResponseMsg } = require('../../utils/responses');
 const invOpp = require('../../models/investmentopportunities')
 
 //About Us Route

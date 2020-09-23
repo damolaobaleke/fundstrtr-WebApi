@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router();
-const { errorResponseMsg, successResponseMsg } = require('../../utils/response');
+const { errorResponseMsg, successResponseMsg } = require('../../utils/responses');
 
 //STRIPE
 // Set your secret key. Remember to switch to your live secret key in production!

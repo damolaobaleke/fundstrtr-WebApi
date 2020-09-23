@@ -1,5 +1,3 @@
-const { model } = require("../../models/user");
-
 const emailTemplate = (username) => {
     const emailText = ` <div class="bg-notify">
         <div class="container">
