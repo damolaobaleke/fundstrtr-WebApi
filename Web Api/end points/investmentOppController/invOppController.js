@@ -13,6 +13,7 @@ const sgMail = require('@sendgrid/mail');
 var invOpp = require('../../models/investmentopportunities')
 var User = require('../../models/user')
 
+//ENDPOINT-  GET pitches
 router.get("/investopp", function(req, res) {
     invOpp.find({}, function(err, invOppInDb) {
         if (err) {
@@ -20,7 +21,6 @@ router.get("/investopp", function(req, res) {
         } else {
             //console.log(invOppInDb)
             res.send({ "investment Opportunities": invOppInDb });
-
         }
     })
 })
