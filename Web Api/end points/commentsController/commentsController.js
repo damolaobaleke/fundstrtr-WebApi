@@ -121,17 +121,6 @@ router.delete("/investopp/pitches/:id/details/comments/:comment_id/", checkComme
     })
 })
 
-
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next() // the next thing to run
-    } else {
-        req.flash('error_message', "You need to Login!")
-        console.log("You are not logged in")
-        res.redirect("/") //should be redirecting to /login(but its a modal) showing modal login
-    }
-}
-
 //
 function checkCommentOwnership(req, res, next) {
     if (req.isAuthenticated()) {

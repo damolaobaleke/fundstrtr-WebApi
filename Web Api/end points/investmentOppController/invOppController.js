@@ -1,5 +1,7 @@
 var express = require('express')
-var router = express.Router()
+var router = express.Router();
+const { errorResponseMsg, successResponseMsg } = require('../../utils/responses');
+let middleware = require('../../middleware/auth');
 
 //STRIPE
 // Set your secret key. Remember to switch to your live secret key in production!
@@ -11,16 +13,19 @@ const sgMail = require('@sendgrid/mail');
 
 //Models
 var invOpp = require('../../models/investmentopportunities')
-var User = require('../../models/user')
 
 //ENDPOINT-  GET pitches
 router.get("/investopp", function(req, res) {
+    //Add middle ware "middleware.isLoggedIn" once view rendering for auth fixed
+
     invOpp.find({}, function(err, invOppInDb) {
         if (err) {
             console.log(err)
+            return errorResponseMsg(res, 400, err.message);
         } else {
             //console.log(invOppInDb)
-            res.send({ "investment Opportunities": invOppInDb });
+            //res.send({"Investment Opportunites": invOppInDb});
+            return successResponseMsg(res, 200, 'pitches fetched', invOppInDb);
         }
     })
 })

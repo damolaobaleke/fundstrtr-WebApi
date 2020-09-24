@@ -1,7 +1,7 @@
-var express = require('express')
-var router = express.Router()
-
-var invOpp = require('../../models/investmentopportunities')
+const express = require('express')
+const router = express.Router()
+const { successResponseMsg } = require('../../utils/responses');
+const invOpp = require('../../models/investmentopportunities')
 
 //About Us Route
 router.get("/about", function(req, res) {
@@ -14,7 +14,7 @@ router.get("/investing", function(req, res) {
         if (err) {
             console.log(err)
         } else {
-            res.render("InvestingInfo/InvestingInfo", { data: pitchInDb })
+            return successResponseMsg(res, 200, 'Fetched investing info', pitchInDb);
         }
     })
 })
