@@ -57,10 +57,11 @@ router.post("/login", passport.authenticate('local', { session: false }), (req, 
         return errorResponseMsg(res, 400, 'Invalid email or password');
     }
     const token = signJWT({
-        email: user.email,
-        username: user.username
+        _id: req.user._id,
+        email: req.user.email,
+        username: req.user.username
     });
-    return sessionSuccessResponseMsg(res, 200, 'Login successfully', token, user);
+    return sessionSuccessResponseMsg(res, 200, 'Login successfully', token, req.user);
 })
 
 //ENDPOINT -GET ALL USERS
@@ -84,7 +85,9 @@ router.get("/users/:id", (req, res) => {
             return successResponseMsg(res, 200, 'Fetched User', user);
         }
     })
-})
+});
+
+// Update user profile
 
 //LogOut
 router.get("/logout", function(req, res) {

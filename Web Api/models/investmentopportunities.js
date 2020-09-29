@@ -1,9 +1,6 @@
-var mongoose = require('mongoose')
-var fileSystem = require('fs')
+const mongoose = require('mongoose')
 
-var imgPath = "./assets/logo150.png"
-
-var InvestmentOpp = mongoose.Schema({
+const InvestmentOpp = mongoose.Schema({
     email: { type: String, default: "femi@gmail.com" },
     firstname: String,
     lastname: String,
@@ -90,7 +87,7 @@ var InvestmentOpp = mongoose.Schema({
 
 })
 
-var invOpp = mongoose.model('investmentOpportunity', InvestmentOpp)
+const invOpp = mongoose.model('investmentOpportunity', InvestmentOpp)
 module.exports = invOpp
 
 // Team: [{
