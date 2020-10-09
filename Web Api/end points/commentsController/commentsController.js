@@ -1,11 +1,14 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 
+// middleware
+const middleware = require('../../middleware/auth');
 
 //Models
-var invOpp = require('../../models/investmentopportunities')
-var discussion = require('../../models/discussion')
-var User = require('../../models/user')
+const invOpp = require('../../models/investmentopportunities')
+const discussion = require('../../models/discussion')
+
+const { successResponseMsg, errorResponseMsg } = require('../../utils/responses')
 
 //COMMENTS Routes  --Nested
 router.get("/investopp/pitches/:id/details/comments/new", function(req, res) {
@@ -19,25 +22,24 @@ router.get("/investopp/pitches/:id/details/comments/new", function(req, res) {
 })
 
 //Display all comments on separate page as well --ENDPOINT
-router.get("/pitches/discussions/:id/details/comments", function(req, res) {
+router.get("/pitch/:id/discussion", middleware.isLoggedIn, function(req, res) {
     invOpp.findById(req.params.id).populate("discussion").exec(function(err, pitchesinDB) {
         if (err) {
             console.log(err)
+            return errorResponseMsg(res, 400, err.message);
         } else {
-            console.log("Pitch" + pitchesinDB.discussion)
-            res.send({ "Discussions": pitchesinDB.discussion });
+            return successResponseMsg(res, 200, 'Discussion fetched', pitchesinDB.discussion);
         }
     })
 })
 
 //Create comment
-router.post("/investopp/pitches/:id/details/comments/", function(req, res) {
-    var discussionbody = { author: req.body.author, comment: req.body.comment }
+router.post("/pitch/:id/discussion/create", middleware.isLoggedIn, function(req, res) {
+    const discussionbody = { author: req.body.author, comment: req.body.comment }
     invOpp.findById(req.params.id, function(err, pitchInDb) {
         if (err) {
             console.log(err)
         } else {
-            //console.log("pitch in db\n" + pitchInDb)
             discussion.create(discussionbody, function(err, discussionInDb) {
                 if (!err) {
                     //add username and id to comment 
@@ -55,9 +57,9 @@ router.post("/investopp/pitches/:id/details/comments/", function(req, res) {
                     pitchInDb.save(function(err, commentsInDb) {
                         if (err) {
                             console.log("Error creating comment" + err)
+                            return errorResponseMsg(res, 400, err.message);
                         } else {
-                            //console.log(commentsInDb)
-                            res.redirect("/investopp/pitches/" + pitchInDb._id + "/details/");
+                            return successResponseMsg(res, 200, 'Created  discussion successfully', discussionInDb);
                         }
                     })
                 } else {

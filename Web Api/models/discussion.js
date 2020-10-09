@@ -1,13 +1,15 @@
-var mongoose = require("mongoose")
+const mongoose = require("mongoose")
 
-var discussionSchema = mongoose.Schema({
+const discussionSchema = new mongoose.Schema({
     //author: String,
     comment: String,
     author: {
         id: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
         username: String
     }
+},{
+    timestamps: true
 })
 
-var discussion = mongoose.model("discussion", discussionSchema);
+const discussion = mongoose.model("discussion", discussionSchema);
 module.exports = discussion;
