@@ -1,20 +1,20 @@
 //Send a json error message based on the status error(5XX OR 4XX)
-const errorResponseMsg = (res, status, message, data) => res.status(status).json({
-    status: 'error',
+const errorResponseMsg = (res, success, message, data) => res.status(success).json({
+    success: false, //error (400)
     message,
     data //from db pitches , users , etc...
 });
 
-const successResponseMsg = function(res, status, message, data) {
-    res.status(status).json({
-        status: 'success',
+const successResponseMsg = function(res, success, message, data) {
+    res.status(success).json({
+        success: true, //status = success(200)
         message,
         data
     });
 }
 
-const sessionSuccessResponseMsg = (res, status, message, token, user) => res.status(status || 200).json({
-    status: 'success',
+const sessionSuccessResponseMsg = (res, success, message, token, user) => res.status(success || 200).json({
+    success: true,
     message,
     data: {
         authenticated: true,

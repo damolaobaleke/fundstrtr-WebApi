@@ -9,7 +9,7 @@ router.get("/", function(req, res) {
     res.send({
         pitches_url: "https://api.fundstrtr.com/investopp",
         users_url: "https://api.fundstrtr.com/users",
-        current_user_url: "https://api.fundstrtr.com/users/:id"
+        current_user_url: "https://api.fundstrtr.com/users/:id",
     });
 
     //Some bug with page rendering -- --Require auth before access

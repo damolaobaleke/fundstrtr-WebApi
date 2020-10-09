@@ -19,17 +19,17 @@ passportLocalMongoose = require('passport-local-mongoose'),
 
 
 //Production
-mongoose.connect(process.env.MongoDBAtlas, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("Connected to MongoDbAtlas")
-}).catch(function(err) {
-    console.log("Error" + err)
-})
+// mongoose.connect(process.env.MongoDBAtlas, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// }).then(() => {
+//     console.log("Connected to MongoDbAtlas")
+// }).catch(function(err) {
+//     console.log("Error" + err)
+// })
 
 //Development
-//mongoose.connect('mongodb://localhost/fundstrtr_1_app', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost/fundstrtr_1_app', { useNewUrlParser: true, useUnifiedTopology: true });
 
 var app = express()
 
@@ -41,11 +41,9 @@ app.set("view engine", "ejs");
 
 //ROUTES DECLARATION -- ENDPOINTS
 var homeEndPoint = require('./Web Api/end points/Home endpoint/homeEndPoint')
-var investmentOppRoutes = require('./Web Api/end points/investmentOppController/invOppController')
-let raisingRoutes = require('./Web Api/end points/raisingController/raisingController')
-let investing_aboutInfoRoutes = require('./Web Api/end points/investing-aboutInfoController/investing_aboutController')
-let commentsRoutes = require('./Web Api/end points/commentsController/commentsController')
-let authenticationRoutes = require('./Web Api/end points/authController/authenticationController')
+var investmentOppEndPoint = require('./Web Api/end points/investmentOppEndPoints/invOppEndPoint')
+let commentsEndPoint = require('./Web Api/end points/commentsEndpoints/commentsEndPoint')
+let authenticationEndPoint = require('./Web Api/end points/authEndpoints/authenticationController')
 
 //MODELS
 var invOpp = require('./Web Api/models/investmentopportunities')
@@ -72,7 +70,8 @@ app.use(passport.session())
 passport.serializeUser(User.serializeUser());
 //unencoding the data
 passport.deserializeUser(User.deserializeUser())
-    //passport.use(new LocalStrategy(User.authenticate())) //uses default passport config, username & password
+
+//passport.use(new LocalStrategy(User.authenticate())) //uses default passport config, username & password
 passport.use(User.createStrategy())
 
 //Middleware- passing currentUser and Flash messages to every route
@@ -88,11 +87,9 @@ app.use(function(req, res, next) {
 
 //ROUTES-- endpoints
 app.use(homeEndPoint)
-app.use(investmentOppRoutes)
-app.use(raisingRoutes)
-app.use(investing_aboutInfoRoutes)
-app.use(commentsRoutes)
-app.use(authenticationRoutes)
+app.use(investmentOppEndPoint)
+app.use(commentsEndPoint)
+app.use(authenticationEndPoint)
 
 
 

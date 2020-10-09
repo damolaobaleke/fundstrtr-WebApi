@@ -17,7 +17,7 @@ var InvestmentOpp = mongoose.Schema({
     corporateStructure: [{
         type: String
     }],
-    raisingAmount: { type: Number, default: 40000 },
+    raisingAmount: { type: String, default: 40000 },
     raisingType: String,
     companyNumber: String,
     RegisteredCompanyName: String,
@@ -30,15 +30,15 @@ var InvestmentOpp = mongoose.Schema({
     twitterUrl: { type: String, default: 'https://twitter.com/eazifundsinc_' },
     instagramUrl: { type: String, default: 'https://www.instagram.com/eazifundsinc/' },
     linkedinUrl: { type: String, default: 'https://www.linkedin.com/company/eazifunds' },
-    //companyLogo:{data: Buffer, contentType: String},
-    //companyheader:{data: Buffer, contentType: String},
+    companyLogo: String,
+    // companyheader:{data: Buffer, contentType: String},
     executiveSummary: String,
     milestone: String,
     //milestone2: String,
     //milestone3: String,
     //milestone4: String,
     equityOffer: String,
-    premoneyValuation: String,
+    premoneyValuation: Number,
     sharePrice: { type: Number },
     idea: String,
     //Team
@@ -72,18 +72,27 @@ var InvestmentOpp = mongoose.Schema({
         details: String,
         //picture: { data: Buffer, contentType: String }
     },
-    //Associating Comments
+    //Associating Comments with pitch
     discussion: [{
         type: mongoose.Schema.Types.ObjectId, //object id
         ref: "discussion" //the model name
     }],
-    //Amount recieved
-    amountReceived: Number,
+
+    //Amount recieved-- storing in an array
+    amountReceived: [{ type: Number }],
+    noOfInvestors: Number, //Amount received length, no need
+    //Addition of the array of amountReceived
+    amountRaised: { type: Number },
+
     //Associate user with pitch
-    investor: {
+    investor: [{
         id: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-        username: String
-    },
+        username: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }],
+    daysLeftToInvest: { type: Number },
+    dateUserInvested: [{ type: Date }],
     //investment options set by business. changed(from Boolean to [String])
     setInvestmentOptions: [{ type: String, default: "nominee_directInvestment" }],
     created: { type: Date, default: Date.now }
@@ -98,6 +107,25 @@ module.exports = invOpp
 //     position: { type: String },
 //     details: { type: String },
 //     //picture: { data: Buffer, contentType: String }
+// }],
+
+//FIXED TEAM(use in update)--TO STORE ALL MEMBER OBJECTS IN AN ARRAY, WHILE STORING ALL ATTRIBUTES IN AN ARRAY
+// Team: [{
+//     member1:[{
+//         name: { type: String },
+//         position: { type: String },
+//         details: { type: String },
+//     }],
+//     member2:[{
+//         name: { type: String },
+//         position: { type: String },
+//         details: { type: String },
+//     }],
+//     member2:[{
+//         name: { type: String },
+//         position: { type: String },
+//         details: { type: String },
+//     }], 
 // }],
 
 // investmentOptions:[{
