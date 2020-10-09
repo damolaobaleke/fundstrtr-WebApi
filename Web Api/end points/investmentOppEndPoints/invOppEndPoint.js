@@ -158,7 +158,7 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
                                 userInDb.pitchesInvestedIn.forEach((pitch) => {
                                     console.log(pitch)
 
-                                    //pitch.dateUserInvested.push();
+                                    //pitch.dateUserInvested.push(new Date());
                                 });
 
                                 userInDb.save(function(err, user) {
