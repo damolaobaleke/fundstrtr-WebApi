@@ -8,13 +8,18 @@ let authMiddleware = require('../../middleware/auth');
 router.get("/", function(req, res) {
     res.send({
         pitches_url: "https://api.fundstrtr.com/investopp",
+        current_pitch_url: "https://api.fundstrtr.com/investopp/pitches/{id}/details",
+        pitch_comments_url: "https://api.fundstrtr.com/investopp/pitch/{id}/discussion",
+        pitch_create_comment_url: "https://api.fundstrtr.com/investopp/pitch/{id}/discussion/create",
+        pitch_update_comment_url: "https://api.fundstrtr.com/investopp/pitch/{id}/details/comments/{comment_id}/",
         users_url: "https://api.fundstrtr.com/users",
-        current_user_url: "https://api.fundstrtr.com/users/:id",
-        pitch_comments_url: "https://api.fundstrtr.com/investopp/pitch/:id/discussion",
-        pitch_create_comment_url: "https://api.fundstrtr.com/investopp/pitch/:id/discussion/create",
-        pitch_update_comment_url: "https://api.fundstrtr.com/investopp/pitch/:id/details/comments/:comment_id/",
-        user_url_update: "https://api.fundstrtr.com/my-profile/complete-form/:id",
-        user_url_portfolio: "https://api.fundstrtr.com/my-profile/:id/portfolio"
+        user_url: "https://api.fundstrtr.com/users/{id}",
+        user_url_update: "https://api.fundstrtr.com/my-profile/complete-form/{id}",
+        user_url_portfolio: "https://api.fundstrtr.com/my-profile/{id}/portfolio",
+        user_url_upload_photo: "https://api.fundstrtr.com/my-profile/{id}/upload",
+        sign_up_url: "https://api.fundstrtr.com/signup",
+        log_in_url: "https://api.fundstrtr.com/login",
+        log_out_url: "https://api.fundstrtr.com/logout"
     });
 
     //Some bug with page rendering -- --Require auth before access

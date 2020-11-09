@@ -1,5 +1,7 @@
 const mongoose = require("mongoose")
+
 const replySchema = mongoose.Schema({
+
     //author: String,
     reply: String,
     author: {

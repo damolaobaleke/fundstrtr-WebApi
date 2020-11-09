@@ -11,15 +11,31 @@ let router = express.Router()
 //Model
 var User = require('../../models/user');
 
-//GET profile
-router.get('/my-profile/:id', function(req, res) {
+//ENDPOINT -GET ALL USERS
+router.get("/users", function(req, res) {
+    User.find({}, function(err, userInDb) {
+        if (err) {
+            console.log(err)
+        } else {
+            return successResponseMsg(res, 200, 'Fetched all users', userInDb);
+        }
+    })
+})
+
+
+//ENDPOINT -GET USER (GET profile)
+router.get('/users/:id', function(req, res) {
     User.findById(req.params.id, function(err, userInDb) {
         if (err) {
-            return errorResponseMsg(res, 400, "error", null)
+            console.log(err)
+            return errorResponseMsg(res, 404, 'User not found');
         } else {
             //HTML date type input doesnt support ISO format
-            const formatDate = moment(userInDb.dateOfBirth).format("YYYY-MM-DD");
-            return successResponseMsg(res, 200, 'User profile found', { userInDb, dateOfBirth: formatDate })
+            const dobFormatted = moment(userInDb.dateOfBirth).format("YYYY-MM-DD");
+            userInDb.dateOfBirth = dobFormatted;
+            userInDb.save();
+
+            return successResponseMsg(res, 200, 'User profile found', userInDb)
         }
     })
 })
@@ -59,7 +75,7 @@ router.post('/my-profile/:id/upload', async(req, res) => {
     }
 });
 
-//GET Portfolio
+//GET Portfolio--Add loggedIn middleware
 router.get("/my-profile/:id/portfolio", function(req, res) {
     //path == key in model of what is to be populated
     User.findById(req.params.id).populate({ path: 'pitchesInvestedIn', populate: { path: 'investor', model: 'User' } }).exec(function(err, userInDb) {

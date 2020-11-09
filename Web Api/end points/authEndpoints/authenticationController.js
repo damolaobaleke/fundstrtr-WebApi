@@ -61,31 +61,10 @@ router.post("/login", passport.authenticate('local', { session: false }), (req, 
         email: req.user.email,
         username: req.user.username
     });
-    return sessionSuccessResponseMsg(res, 200, 'Login successfully', token, req.user);
+    console.log(res.user);
+    return sessionSuccessResponseMsg(res, 200, 'Login successfull', token, req.user);
 })
 
-//ENDPOINT -GET ALL USERS
-router.get("/users", function(req, res) {
-    User.find({}, function(err, userInDb) {
-        if (err) {
-            console.log(err)
-        } else {
-            return successResponseMsg(res, 200, 'Fetched all users', userInDb);
-        }
-    })
-})
-
-//ENDPOINT -GET USER
-router.get("/users/:id", (req, res) => {
-    User.findById(req.params.id, (err, user) => {
-        if (err) {
-            console.log(err);
-            return errorResponseMsg(res, 404, 'User not found');
-        } else {
-            return successResponseMsg(res, 200, 'Fetched User', user);
-        }
-    })
-});
 
 // Update user profile
 
