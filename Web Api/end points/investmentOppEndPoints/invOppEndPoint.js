@@ -60,22 +60,19 @@ router.get("/investopp", function(req, res) {
             /**DAYS LEFT TO INVEST */
 
             //res.send({"Investment Opportunites": invOppInDb});
-            return successResponseMsg(res, 200, 'pitches fetched', { invOppInDb });
+            return successResponseMsg(res, 200, 'pitches fetched', invOppInDb);
         }
     })
 })
 
 
-//SHOW-- NOT NEEDED
-router.get("/investopp/pitches/:id/details", middleware.isLoggedIn, function(req, res) {
-    // console.log('i got here')
-    invOpp.findById(req.params.id).populate("discussion").exec(function(err, pitchInDb) {
+//SHOW-- 
+router.get("/investopp/pitches/:id/details", function(req, res) {
+    invOpp.findById(req.params.id).populate({ path: 'discussion', populate: { path: 'replies', model: 'reply' } }).exec(function(err, pitchInDb) {
         if (err) {
-            console.log(err)
-            return errorResponseMsg(res, 404, 'Pitch not found');
+            return errorResponseMsg(res, 400, err.message, null)
         } else {
-            // res.send({ "investment opportunities detailed": pitchInDb })
-            return successResponseMsg(res, 200, 'pitch details fetched', { pitchInDb })
+            return successResponseMsg(res, 200, 'pitch details', pitchInDb)
         }
     })
 })

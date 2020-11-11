@@ -43,8 +43,8 @@ app.set("view engine", "ejs");
 var homeEndPoint = require('./Web Api/end points/Home endpoint/homeEndPoint')
 var investmentOppEndPoint = require('./Web Api/end points/investmentOppEndPoints/invOppEndPoint')
 let commentsEndPoint = require('./Web Api/end points/commentsEndpoints/commentsEndPoint')
-let userProfile = require('./Web Api/end points/userProfileEndPoint/userProfileEndPoint')
 let authenticationEndPoint = require('./Web Api/end points/authEndpoints/authenticationController')
+let usersEndPoint = require('./Web Api/end points/userProfileEndPoint/userProfileEndPoint')
 
 //MODELS
 var invOpp = require('./Web Api/models/investmentopportunities')
@@ -91,7 +91,7 @@ app.use(homeEndPoint)
 app.use(investmentOppEndPoint)
 app.use(commentsEndPoint)
 app.use(authenticationEndPoint)
-app.use(userProfile);
+app.use(usersEndPoint);
 
 
 
