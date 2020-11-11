@@ -67,23 +67,23 @@ middleWareObj.checkPitchOwnership = function(req, res, next) {
 }
 
 middleWareObj.checkCommentOwnership = function(req, res, next) {
-    if (req.isAuthenticated()) {
-        discussion.findById(req.params.comment_id, function(err, commentInDb) {
-            if (err) {
-                console.log(err)
-                res.redirect("back")
-            } else {
-                //does user own comment
+    discussion.findById(req.params.comment_id, function(err, commentInDb) {
+        if (err) {
+            console.log(err)
+            return errorResponseMsg(res, 404, "Comment not found");
+        } else {
+            //does user own comment
+            if(commentInDb) {
                 if (commentInDb.author.id.equals(req.user._id)) {
                     next()
                 } else {
-                    res.redirect("back")
+                    return errorResponseMsg(res, 401, "Unauthorized user");
                 }
+            } else {
+                return errorResponseMsg(res, 404, "Comment not found");
             }
-        })
-    } else {
-
-    }
+        }
+    });
 }
 
 module.exports = middleWareObj;

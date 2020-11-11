@@ -26,7 +26,7 @@ router.get('/my-profile/:id', function(req, res) {
 
 //Update(PUT) profile
 router.put('/my-profile/complete-form/:id', function(req, res) {
-    User.findByIdAndUpdate(req.params.id, req.body.user, (err, updatedUserInDb) => { //req.body.user-- user object already logged in req
+    User.findByIdAndUpdate(req.params.id, req.body, (err, updatedUserInDb) => { //req.body-- user object already logged in req
         if (err) {
             return errorResponseMsg(res, 400, "error", null)
         } else {

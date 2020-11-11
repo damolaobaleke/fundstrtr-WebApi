@@ -68,11 +68,14 @@ router.get("/investopp", function(req, res) {
 
 //SHOW-- NOT NEEDED
 router.get("/investopp/pitches/:id/details", middleware.isLoggedIn, function(req, res) {
+    // console.log('i got here')
     invOpp.findById(req.params.id).populate("discussion").exec(function(err, pitchInDb) {
         if (err) {
             console.log(err)
+            return errorResponseMsg(res, 404, 'Pitch not found');
         } else {
-            res.send({ "investment opportunities detailed": pitchInDb })
+            // res.send({ "investment opportunities detailed": pitchInDb })
+            return successResponseMsg(res, 200, 'pitch details fetched', { pitchInDb })
         }
     })
 })

@@ -18,18 +18,18 @@ passportLocalMongoose = require('passport-local-mongoose'),
     flash = require('connect-flash')
 
 
-//Production
-// mongoose.connect(process.env.MongoDBAtlas, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-// }).then(() => {
-//     console.log("Connected to MongoDbAtlas")
-// }).catch(function(err) {
-//     console.log("Error" + err)
-// })
+// Production
+mongoose.connect(process.env.MongoDBAtlas, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Connected to MongoDbAtlas")
+}).catch(function(err) {
+    console.log("Error" + err)
+})
 
 //Development
-mongoose.connect('mongodb://localhost/fundstrtr_1_app', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost/fundstrtr_1_app', { useNewUrlParser: true, useUnifiedTopology: true });
 
 var app = express()
 
@@ -43,6 +43,7 @@ app.set("view engine", "ejs");
 var homeEndPoint = require('./Web Api/end points/Home endpoint/homeEndPoint')
 var investmentOppEndPoint = require('./Web Api/end points/investmentOppEndPoints/invOppEndPoint')
 let commentsEndPoint = require('./Web Api/end points/commentsEndpoints/commentsEndPoint')
+let userProfile = require('./Web Api/end points/userProfileEndPoint/userProfileEndPoint')
 let authenticationEndPoint = require('./Web Api/end points/authEndpoints/authenticationController')
 
 //MODELS
@@ -90,6 +91,7 @@ app.use(homeEndPoint)
 app.use(investmentOppEndPoint)
 app.use(commentsEndPoint)
 app.use(authenticationEndPoint)
+app.use(userProfile);
 
 
 

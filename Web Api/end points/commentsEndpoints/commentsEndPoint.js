@@ -67,29 +67,32 @@ router.post("/investopp/pitch/:id/discussion/create", middleware.isLoggedIn, fun
 
 //Update Comments
 router.put("/investopp/pitch/:id/details/comments/:comment_id/", function(req, res) {
-    discussion.findByIdAndUpdate(req.params.comment_id, req.body.pitch, function(err, updatedCommentsIndb) {
+    discussion.findById(req.params.comment_id, async function(err, updatedCommentsIndb) {
         if (err) {
             console.log(err)
-            return errorResponseMsg(res, 400, err, null)
+            return errorResponseMsg(res, 400, 'Invalid Discussion Id');
         } else {
-            console.log(req.body)
-            console.log("Updated comment" + updatedCommentsIndb)
+            // console.log(updatedCommentsIndb)
+            updatedCommentsIndb.comment = req.body.comment;
+            const updatedComment = await updatedCommentsIndb.save();
+            // console.log("Updated comment" + updatedComment)
 
-            return successResponseMsg(res, 200, "updated comment", updatedCommentsIndb)
+            return successResponseMsg(res, 200, "updated comment", updatedComment)
         }
     })
 })
 
 
 //Delete Comment -Update
-router.delete("/investopp/pitches/:id/details/comments/:comment_id/", middleware.checkCommentOwnership, (req, res) => {
+router.delete("/investopp/pitches/:id/details/comments/:comment_id/", [middleware.isLoggedIn, middleware.checkCommentOwnership], (req, res) => {
     discussion.findByIdAndRemove(req.params.comment_id, function(err, comments) {
         if (!err) {
             console.log("deleted comment" + "\n" + comments)
-            res.redirect("/investopp/pitches/" + req.params.id + "/details")
+            return successResponseMsg(res, 200, "Deleted comment")
         } else {
-            req.flash("error_message", err.message)
             console.log(err)
+            return errorResponseMsg(res, 400, 'Invalid Discussion Id');
+
         }
     })
 })
