@@ -1,7 +1,5 @@
-const mongoose = require("mongoose")
-
-const replySchema = mongoose.Schema({
-
+var mongoose = require("mongoose")
+var replySchema = mongoose.Schema({
     //author: String,
     reply: String,
     author: {
@@ -10,5 +8,5 @@ const replySchema = mongoose.Schema({
     },
 })
 
-const reply = mongoose.model("reply", replySchema);
+var reply = mongoose.model("reply", replySchema);
 module.exports = reply;

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose")
+var mongoose = require("mongoose")
 
-const discussionSchema = new mongoose.Schema({
+var discussionSchema = mongoose.Schema({
     //author: String,
     comment: String,
     author: {
@@ -13,9 +13,8 @@ const discussionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "reply"
     }],
-    timestamps: { type: Boolean, default: true },
     datecreated: { type: Date, default: Date.now }
 })
 
-const discussion = mongoose.model("discussion", discussionSchema);
+var discussion = mongoose.model("discussion", discussionSchema);
 module.exports = discussion;

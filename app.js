@@ -15,7 +15,9 @@ passport = require('passport'),
 passportLocalMongoose = require('passport-local-mongoose'),
     fileSystem = require('fs'),
     methodOverride = require('method-override'),
-    flash = require('connect-flash')
+    flash = require('connect-flash');
+
+const fileupload = require('express-fileupload');
 
 
 // Production
@@ -38,6 +40,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(__dirname + "/public"))
 app.use(methodOverride("_method")) //whenever app gets a request having _method use that new request to override 
 app.set("view engine", "ejs");
+app.use(fileupload({ useTempFiles: true }));
+
 
 //ROUTES DECLARATION -- ENDPOINTS
 var homeEndPoint = require('./Web Api/end points/Home endpoint/homeEndPoint')
@@ -45,6 +49,7 @@ var investmentOppEndPoint = require('./Web Api/end points/investmentOppEndPoints
 let commentsEndPoint = require('./Web Api/end points/commentsEndpoints/commentsEndPoint')
 let authenticationEndPoint = require('./Web Api/end points/authEndpoints/authenticationController')
 let usersEndPoint = require('./Web Api/end points/userProfileEndPoint/userProfileEndPoint')
+let connectionTokenEndPoint = require('./Web Api/end points/connectionTokenEndpoint/mobileConnectionEndpoint');
 
 //MODELS
 var invOpp = require('./Web Api/models/investmentopportunities')
@@ -92,6 +97,7 @@ app.use(investmentOppEndPoint)
 app.use(commentsEndPoint)
 app.use(authenticationEndPoint)
 app.use(usersEndPoint);
+app.use(connectionTokenEndPoint);
 
 
 
