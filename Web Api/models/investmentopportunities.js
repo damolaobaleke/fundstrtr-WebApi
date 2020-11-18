@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+var mongoose = require('mongoose')
+var fileSystem = require('fs')
 
-const InvestmentOpp = mongoose.Schema({
+var imgPath = "./assets/logo150.png"
+
+var InvestmentOpp = mongoose.Schema({
     email: { type: String, default: "femi@gmail.com" },
     firstname: String,
     lastname: String,
@@ -14,10 +17,10 @@ const InvestmentOpp = mongoose.Schema({
     corporateStructure: [{
         type: String
     }],
-    raisingAmount: { type: String, default: 40000 },
+    raisingAmount: { type: Number, default: 40000 },
     raisingType: String,
     companyNumber: String,
-    RegisteredCompanyName: String,
+    registeredCompanyName: String,
     tradingName: String,
     addressLine1: String,
     addressLine2: String,
@@ -28,46 +31,50 @@ const InvestmentOpp = mongoose.Schema({
     instagramUrl: { type: String, default: 'https://www.instagram.com/eazifundsinc/' },
     linkedinUrl: { type: String, default: 'https://www.linkedin.com/company/eazifunds' },
     companyLogo: String,
-    // companyheader:{data: Buffer, contentType: String},
+    companyHeader: String,
     executiveSummary: String,
     milestone: String,
+    driveLink: String,
     //milestone2: String,
     //milestone3: String,
     //milestone4: String,
     equityOffer: String,
     premoneyValuation: Number,
     sharePrice: { type: Number },
+    shareType: String,
+    dateFounded: Date,
+    dateIncorporated: Date,
     idea: String,
     //Team
     teamMember1: {
         name: String,
         position: String,
         details: String,
-        //picture: { data: Buffer, contentType: String }
+        picture: { type: String, default: "https://res.cloudinary.com/https-eazifunds-com/image/upload/v1601316915/d5_1_djdqfr.png" }
     },
     teamMember2: {
         name: String,
         position: String,
         details: String,
-        //picture: { data: Buffer, contentType: String }
+        picture: { type: String, default: "https://images.crowdcube.com/unsafe/570x0/filters:format(jpeg):max_bytes(50000)/https://files-crowdcube-com.s3.amazonaws.com/files/opportunity_section_media/original/202003/estherbandw_a7f98e116977f52feb0b4aae6171d91b.jpg" }
     },
     teamMember3: {
         name: String,
         position: String,
         details: String,
-        //picture: { data: Buffer, contentType: String }
+        picture: String
     },
     teamMember4: {
         name: String,
         position: String,
         details: String,
-        //picture: { data: Buffer, contentType: String }
+        picture: String
     },
     teamMember5: {
         name: String,
         position: String,
         details: String,
-        //picture: { data: Buffer, contentType: String }
+        picture: String
     },
     //Associating Comments with pitch
     discussion: [{
@@ -83,10 +90,10 @@ const InvestmentOpp = mongoose.Schema({
 
     //Associate user with pitch
     investor: [{
-        id: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+        id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         username: String,
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
+        ref: "User"
     }],
     daysLeftToInvest: { type: Number },
     dateUserInvested: [{ type: Date }],
@@ -96,7 +103,7 @@ const InvestmentOpp = mongoose.Schema({
 
 })
 
-const invOpp = mongoose.model('investmentOpportunity', InvestmentOpp)
+var invOpp = mongoose.model('investmentOpportunity', InvestmentOpp)
 module.exports = invOpp
 
 // Team: [{

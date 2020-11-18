@@ -110,18 +110,39 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
                 // Create new PaymentIntent with a PaymentMethod ID from the client.
                 const intent = await stripe.paymentIntents.create({
                     //amountWithFee,
-                    amount,
+                    amount: amountWithFee,
                     currency,
+                    customer: req.user.stripeCustomerId,
                     payment_method: paymentMethodId,
                     error_on_requires_action: true,
-                    confirm: true
+                    setup_future_usage: 'off_session',
+                    //off_session: true,
+                    confirm: true,
+                    capture_method: 'manual', //capture the amount-- dont debit immediately
                 });
+
+                //capture authorized funds
+                const captureIntent = await stripe.paymentIntents.capture(intent.id, {
+                    // metadata: {
+                    //     address: req.user.addressLine1,
+                    //     phone: req.user.phoneNumber,
+                    // },
+                    // description: `${pitchInDb.tradingName} Investment`
+                });
+                console.log(`The captured intent: ${captureIntent}`)
+
+                // Confirm the PaymentIntent to place a hold on the card-- Another way
+                // let captureIntent = await stripe.paymentIntents.confirm(intent.id);
+
+                // if (captureIntent.status === "requires_capture") {
+                //     console.log("❗ Charging the card for: " + captureIntent.amount_capturable);
+                //     captureIntent = await stripe.paymentIntents.capture(intent.id);
+                // }
+
 
                 console.log("💰 Payment received!");
 
                 //amounts received by pitch, successful investment
-
-                //array of amounts(actual value)
                 pitchInDb.amountReceived.push(amountInDb);
 
                 let amountRaised = 0;
@@ -134,37 +155,55 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
                 //save pitchInDb with amount raised
                 pitchInDb.save(function(err, pitchInDb) {
                     if (!err) {
-                        console.log("Updated pitch " + pitchInDb.amountReceived + "\n" + pitchInDb.amountRaised)
+                        console.log(`pitch: amount recieved::${pitchInDb.amountReceived} amount raised::${pitchInDb.amountRaised}`)
 
                         //Add pitch invested in to user(for portfolio)
                         User.findById(req.params.user_id, function(err, userInDb) {
                             if (!err) {
                                 userInDb.pitchesInvestedIn.addToSet(pitchInDb);
+                                /*Net worth - sharesReceived Value*/
 
-                                //Net worth - sharesReceived Value
                                 //const sharesReceived = chargeAmount / pitchInDb.sharePrice
-                                userInDb.investments.push(chargeAmount)
+                                //userInDb.investments.push(chargeAmount) //old MODEL
 
-                                let netWorth = 0;
-                                for (i = 0; i < userInDb.investments.length; i++) {
-                                    netWorth += parseInt(userInDb.investments[i])
-                                    userInDb.netWorth = netWorth;
+                                let invObj = {
+                                    amount: [chargeAmount],
+                                    tradingName: pitchInDb.tradingName,
+                                    datesOfInvestments: [new Date()]
                                 }
 
-                                //Date of Investments--array
-                                //const currentDate = new Date() //current day
-                                userInDb.datesOfInvestments.push(new Date())
+                                //if trading name exists in array of investments
+                                let tradingObjS = userInDb.investments.find((inv) => {
+                                    return inv.tradingName == pitchInDb.tradingName
+                                })
 
-                                userInDb.pitchesInvestedIn.forEach((pitch) => {
-                                    console.log(pitch)
+                                if (tradingObjS != null) {
+                                    //add amount to amount array field and date to datefield
+                                    //in unique object
+                                    tradingObjS.amount.push(chargeAmount);
+                                    tradingObjS.datesOfInvestments.push(new Date())
+                                } else {
+                                    //if not push  or create new investment object in investment
+                                    userInDb.investments.addToSet(invObj);
+                                }
+                                //userInDb.investments.addToSet(invObj);
 
-                                    //pitch.dateUserInvested.push(new Date());
-                                });
+
+                                let netWorth = 0;
+                                userInDb.investments.forEach((investment) => {
+                                    investment.amount.forEach((amount) => {
+
+                                        netWorth += parseInt(amount)
+                                        userInDb.netWorth = netWorth;
+                                    })
+                                })
+
 
                                 userInDb.save(function(err, user) {
                                     if (!err) {
                                         //Add investor to pitch -- addToSet prevent duplicate value e.g so duplicate user object
                                         pitchInDb.investor.addToSet(user);
+                                        console.log(user)
 
                                         //After adding investor to pitch
                                         pitchInDb.save()
@@ -176,7 +215,7 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
                             }
                         })
 
-                        console.log("New Updated pitch " + pitchInDb.amountReceived + "\n" + pitchInDb.amountRaised)
+                        console.log(`Updated pitch: amount received:: ${pitchInDb.amountReceived}  amount raised:: ${pitchInDb.amountRaised}`)
                     } else {
                         console.log(err)
                     }
@@ -186,16 +225,41 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
                 await req.user.save();
 
                 // The payment is complete and the money has been moved
-                // You can add any post-payment code here (e.g. shipping, fulfillment, etc)
 
-                // Send the client secret to the client to use in the demo
+                // Send the client secret generated from intent to confirm payment on client side.
                 res.send({ clientSecret: intent.client_secret });
+
             } catch (e) {
-                // Handle "hard declines" e.g. insufficient funds, expired card, card authentication etc
-                // See https://stripe.com/docs/declines/codes for more
+                // See https://stripe.com/docs/declines/codes
                 if (e.code === "authentication_required") {
+                    // Bring the customer back on-session to authenticate the purchase
+                    // send an email or app notification
+                    const msgInfo = {
+                        to: req.user.email,
+                        from: 'info@eazifunds.com',
+                        subject: 'Transaction Failed',
+                        text: "Your card is being charged",
+                        html: '<p>Your card is about to be charged, please authenticate this</p>',
+                    };
+                    sgMail.send(msgInfo)
+
                     res.send({
-                        error: "This card requires authentication in order to proceeded. Please use a different card."
+                        error: "This card requires authentication in order to proceed. Please use a different card.",
+                        paymentMethod: e.raw.payment_method.id,
+                        clientSecret: e.raw.payment_intent.client_secret,
+                        amount: amountWithFee,
+                        card: {
+                            brand: e.raw.payment_method.card.brand,
+                            last4: e.raw.payment_method.card.last4
+                        }
+
+                    });
+                } else if (e.code) {
+                    // The card was declined for other reasons (e.g. insufficient funds)
+                    // Bring the customer back on-session to ask for a new payment method
+                    res.send({
+                        error: e.code,
+                        clientSecret: e.raw.payment_intent.client_secret,
                     });
                 } else {
                     console.log(e.message)

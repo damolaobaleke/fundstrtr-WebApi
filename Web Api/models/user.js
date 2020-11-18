@@ -1,9 +1,14 @@
-const mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
     passportLocalMongoose = require('passport-local-mongoose');
 
-const userSchema = new mongoose.Schema({
-    email: String,
-    username: String,
+const investmentsSchema = mongoose.Schema({
+    amount: [{ type: Number }],
+    tradingName: String
+});
+
+var userSchema = new mongoose.Schema({
+    email: { type: String, unique: true, required: true },
+    username: { type: String, unique: true, required: true },
     password: String,
     firstname: String,
     lastname: String,
@@ -14,29 +19,40 @@ const userSchema = new mongoose.Schema({
     postcode: String,
     country: [{ type: String }],
     phoneNumber: String,
-    profileImage: String,
+    profileImage: {
+        type: String,
+        default: "https://www.w3schools.com/howto/img_avatar.png",
+    },
     dateOfBirth: Date,
     /*auth*/
     linkedinId: String,
     facebookId: String,
     googleId: String,
+    stripeCustomerId: String,
     //Association by reference to pitches
     pitchesInvestedIn: [{
         type: mongoose.Types.ObjectId,
         ref: "investmentOpportunity",
     }],
     netWorth: Number,
-    investments: [{ type: Number }],
+    //investments: [Number],
+    investments: [{
+        amount: [{ type: Number }],
+        tradingName: String,
+        datesOfInvestments: [{ type: Date }]
+    }],
     emailMarketing: { type: Boolean, default: false },
     isInvested: { type: Boolean, default: false },
-    datesOfInvestments: [{ type: Date }],
-    dateJoined: { type: Date, default: Date.now }
+    dateJoined: { type: Date, default: Date.now },
+    emailToken: String,
+    isVerified: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 })
 
 //Adds methods which comes with the passportLocalMongoose package to the userSchema e.g Register()
 //use email field for auth
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' })
 
-const User = mongoose.model("user", userSchema)
-
+var User = mongoose.model("User", userSchema)
 module.exports = User

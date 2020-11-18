@@ -42,9 +42,9 @@ router.get('/users/:id', function(req, res) {
 
 //Update(PUT) profile
 router.put('/my-profile/complete-form/:id', function(req, res) {
-    User.findByIdAndUpdate(req.params.id, req.body.user, (err, updatedUserInDb) => { //req.body.user-- user object already logged in req
+    User.findByIdAndUpdate(req.params.id, req.body, (err, updatedUserInDb) => { //req.body-- user object already logged in req
         if (err) {
-            return errorResponseMsg(res, 400, "error", null)
+            return errorResponseMsg(res, 404, 'Invalid user_id');
         } else {
             return successResponseMsg(res, 200, 'User profile updated', updatedUserInDb)
         }
@@ -56,20 +56,11 @@ router.post('/my-profile/:id/upload', async(req, res) => {
     try {
         const user = await User.findById(req.params.id);
         const photo = await uploadPhoto(req, res, 'image/png', 'image/jpeg', 20000); //max size 20000kb == 20Mb
+        // console.log(photo)
         user.profileImage = photo;
-        await user.save(function(err, updatedUserInDb) {
-            if (err) {
-                return errorResponseMsg(res, 400, "error", null)
-            } else {
-                return successResponseMsg(res, 200, 'Profile photo added', updatedUserInDb.profileImage)
-            }
-        });
-
+        await user.save();
         //Return success
-        return res.status(200).json({
-            status: "success"
-        })
-
+        return successResponseMsg(res, 200, 'Image Upload successfully', { imageUrl: photo });
     } catch (err) {
         console.log(err)
     }
