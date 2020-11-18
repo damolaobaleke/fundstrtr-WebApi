@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const sgMail = require('@sendgrid/mail');
+const crypto = require('crypto')
 const { signJWT } = require('../../utils/security/auth-token');
 
 const { successResponseMsg, errorResponseMsg, sessionSuccessResponseMsg } = require('../../utils/responses');
@@ -10,7 +11,7 @@ const User = require('../../models/user')
 
 //AUTHENTICATION ROUTES
 router.post("/signup", function(req, res) {
-    const newUsers = new User({ email: req.body.email, username: req.body.username });
+    const newUsers = new User({ email: req.body.email, username: req.body.username, emailToken: crypto.randomBytes(64).toString('hex') });
 
     User.register(newUsers, req.body.password, function(err, user) {
         if (err) {

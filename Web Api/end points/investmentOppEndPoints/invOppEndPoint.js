@@ -109,8 +109,8 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
             try {
                 // Create new PaymentIntent with a PaymentMethod ID from the client.
                 const intent = await stripe.paymentIntents.create({
-                    //amountWithFee,
-                    amount,
+                    //amount,
+                    amount: amountWithFee,
                     currency,
                     payment_method: paymentMethodId,
                     error_on_requires_action: true,

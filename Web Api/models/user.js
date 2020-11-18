@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
         ref: "investmentOpportunity",
     }],
     netWorth: Number,
+    emailToken: String,
     investments: [{ type: Number }],
     emailMarketing: { type: Boolean, default: false },
     isInvested: { type: Boolean, default: false },
