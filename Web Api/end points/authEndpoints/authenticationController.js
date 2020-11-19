@@ -18,6 +18,8 @@ router.post("/signup", function(req, res) {
             console.log(err)
             return errorResponseMsg(res, 400, err.message, null);
         } else {
+            //Add verify email route from product in here and send email to user
+
             passport.authenticate("local", { session: false })(req, res, function() {
                 //Send notification
                 const email = emailTemplate(user.username);

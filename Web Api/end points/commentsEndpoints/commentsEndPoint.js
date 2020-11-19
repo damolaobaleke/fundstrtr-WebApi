@@ -70,7 +70,7 @@ router.put("/investopp/pitch/:id/details/comments/:comment_id/", function(req, r
     discussion.findById(req.params.comment_id, async function(err, updatedCommentsIndb) {
         if (err) {
             console.log(err)
-            return errorResponseMsg(res, 400, 'Invalid Discussion Id');
+            return errorResponseMsg(res, 400, err, null);
         } else {
             // console.log(updatedCommentsIndb)
             updatedCommentsIndb.comment = req.body.comment;

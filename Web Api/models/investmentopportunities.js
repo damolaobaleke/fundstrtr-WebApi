@@ -1,5 +1,5 @@
-var mongoose = require('mongoose')
-var fileSystem = require('fs')
+const mongoose = require('mongoose')
+const fileSystem = require('fs')
 
 var imgPath = "./assets/logo150.png"
 
