@@ -13,12 +13,25 @@ const User = require('../../models/user')
 router.post("/signup", function(req, res) {
     const newUsers = new User({ email: req.body.email, username: req.body.username, emailToken: crypto.randomBytes(64).toString('hex') });
 
-    User.register(newUsers, req.body.password, function(err, user) {
+    User.register(newUsers, req.body.password, async function(err, user) {
         if (err) {
             console.log(err)
             return errorResponseMsg(res, 400, err.message, null);
         } else {
             //Add verify email route from product in here and send email to user
+
+            //create stripe customer
+            const customer = await stripe.customers.create({
+                email: user.email,
+                description: `Customer: ${user.username} created`,
+            });
+
+            if (customer) {
+                user.stripeCustomerId = customer.id;
+                console.log(customer)
+                user.save()
+                console.log(user.stripeCustomerId)
+            }
 
             passport.authenticate("local", { session: false })(req, res, function() {
                 //Send notification

@@ -19,6 +19,20 @@ passportLocalMongoose = require('passport-local-mongoose'),
 
 const fileupload = require('express-fileupload');
 
+//Production Scalegrid
+// var certificateFileBuf = fileSystem.readFileSync("sslCA");
+// var options = {
+//     sslCA: certificateFileBuf
+// }
+
+// mongoose.connect(process.env.MongoDbScaleGrid, options)
+//     .then(() => {
+//         console.log("Connected to MongoDbScaleGrid")
+//     }).catch(function(err) {
+//         console.log("Error" + err)
+//     })
+
+
 
 // Production
 mongoose.connect(process.env.MongoDBAtlas, {
@@ -31,7 +45,7 @@ mongoose.connect(process.env.MongoDBAtlas, {
 })
 
 //Development
-// mongoose.connect('mongodb://localhost/fundstrtr_1_app', { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect('mongodb://localhost/fundstrtr_1_app', { useNewUrlParser: true, useUnifiedTopology: true });
 
 var app = express()
 

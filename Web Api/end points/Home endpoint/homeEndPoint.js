@@ -17,6 +17,8 @@ router.get("/", function(req, res) {
         user_url_update: "https://api.fundstrtr.com/my-profile/complete-form/{id}",
         user_url_portfolio: "https://api.fundstrtr.com/my-profile/{id}/portfolio",
         user_url_upload_photo: "https://api.fundstrtr.com/my-profile/{id}/upload",
+        pay_url: "https://api.fundstrtr.com/investopp/pitches/{id}/invest/{user_id}/pay",
+        user_ephemeralKey_url: "https://api.fundstrtr.com/user/{id}/ephemeralKey",
         sign_up_url: "https://api.fundstrtr.com/signup",
         log_in_url: "https://api.fundstrtr.com/login",
         log_out_url: "https://api.fundstrtr.com/logout"

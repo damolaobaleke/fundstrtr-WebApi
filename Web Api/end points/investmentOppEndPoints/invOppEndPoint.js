@@ -123,11 +123,7 @@ router.post('/investopp/pitches/:id/invest/:user_id/pay', async(req, res) => {
 
                 //capture authorized funds
                 const captureIntent = await stripe.paymentIntents.capture(intent.id, {
-                    // metadata: {
-                    //     address: req.user.addressLine1,
-                    //     phone: req.user.phoneNumber,
-                    // },
-                    // description: `${pitchInDb.tradingName} Investment`
+
                 });
                 console.log(`The captured intent: ${captureIntent}`)
 
