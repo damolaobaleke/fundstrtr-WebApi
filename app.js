@@ -50,7 +50,7 @@ mongoose.connect(process.env.MongoDBAtlas, {
 var app = express()
 
 app.use(express.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static(__dirname + "/public"))
 app.use(methodOverride("_method")) //whenever app gets a request having _method use that new request to override 
 app.set("view engine", "ejs");
